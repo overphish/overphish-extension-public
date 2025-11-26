@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OverPhish Blocked This Site</title>
+    <link rel="stylesheet" href="/ui/css/pico.colors.min.css">
+    <link rel="stylesheet" href="/ui/css/pico.min.css">
+    <style>
+        body {
+            transition: opacity 0.2s;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .warning {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1.5;
+            margin: 0 0 1rem;
+            color: var(--pico-color-red-500);
+            border: 2px solid var(--pico-color-red-500);
+            border-radius: .5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .25rem 2rem;
+        }
+
+        .warning svg {
+            width: 5rem;
+            margin-right: 1rem;
+            fill: var(--pico-color-yellow-100);
+            background-color: var(--pico-color-red-500);
+            border-radius: .5rem;
+        }
+
+        .url {
+            background: var(--pico-color-grey-50);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--pico-text-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: .75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group button {
+            min-width: 180px;
+            font-weight: 600;
+            border: none;
+        }
+
+        #allow-once {
+            background-color: var(--pico-color-amber-150) !important;
+            color: var(--pico-color-grey-900) !important;
+        }
+
+        #allow-once:hover {
+            background-color: var(--pico-color-amber-100) !important;
+        }
+
+        #allow-once::after {
+            content: "*";
+            position: absolute;
+        }
+
+        .allowance-caveat {
+            color: var(--pico-color-zinc-600);
+        }
+
+        #whitelist {
+            background-color: var(--pico-color-jade-500) !important;
+        }
+
+        #whitelist:hover {
+            background-color: var(--pico-color-jade-450) !important;
+        }
+
+        hr {
+            border-top: 1px solid var(--pico-divider-color);
+            margin: 2rem 0;
+        }
+
+        .footer {
+            padding: 1rem 0;
+            font-size: .75rem;
+            color: var(--pico-muted-color);
+        }
+
+        .footer p {
+            margin: 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--pico-color-red-500);
+            text-decoration: underline;
+        }
+
+        .footer a:hover {
+            color: var(--pico-color-red-600);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: .75rem;
+            margin-top: .5rem;
+            padding: .1rem .5rem;
+            border: 1px solid var(--pico-muted-color);
+            opacity: .6;
+            transition: opacity .2s;
+        }
+
+        .theme-toggle:hover {
+            opacity: 1;
+        }
+
+        .bi.bi-sun {
+            display: none;
+        }
+
+        .bi.bi-moon-stars {
+            display: inline-block;
+            margin-top: -2.5px;
+        }
+
+        [data-theme="light"] {
+            --pico-background-color: var(--pico-color-light);
+            --pico-text-color: var(--pico-color-grey-950);
+            --pico-muted-color: var(--pico-color-grey-500);
+
+            #domain {
+                background: var(--pico-color-red-50);
+                color: var(--pico-color-red-700);
+            }
+
+            hr {
+                border-top-color: var(--pico-color-grey-200);
+            }
+
+            #theme-toggle {
+                color: var(--pico-color-grey-950);
+            }
+
+            .bi.bi-sun {
+                display: inline-block;
+            }
+
+            .bi.bi-moon-stars {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container" style="max-width:900px;margin:2rem auto;text-align:center;">
+        <article>
+            <header style="margin-bottom:0;">
+                <div class="warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                        <path
+                            d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z" />
+                    </svg>
+                    Warning
+                </div>
+                <h1>OverPhish Blocked This Site</h1>
+            </header>
+
+            <div class="url" id="blocked-url">Loading...</div>
+            <p><strong>Reason:</strong> Known phishing / malware domain</p>
+            <p>The domain <strong id="domain_bold"></strong> is listed on a public phishing/malware blocklist.</p>
+            <hr>
+            <div class="btn-group">
+                <button id="go-back" class="primary">GO BACK</button>
+                <div style="display: flex;flex-direction: column;position: relative;">
+                    <button id="allow-once" class="secondary">Allow Once</button>
+                    <small style="position: absolute;bottom:-40%;left:50%;transform: translateX(-50%);width:100%"
+                        class="allowance-caveat">*For 5 minutes.</small>
+                </div>
+                <button id="whitelist" class="success">Whitelist and Continue</button>
+            </div>
+
+            <footer class="footer">
+                <div class="grid">
+                    <p style="text-align: center;">Powered by <a href="https://overphish.app">OverPhish</a> •
+                        Updated daily • <a href="../privacy/privacy.html" data-i18n="privacy_policy">Privacy
+                            Policy</a></p>
+                </div>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                        class="bi bi-moon-stars" viewBox="0 0 16 16">
+                        <path
+                            d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278M4.858 1.311A7.27 7.27 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.32 7.32 0 0 0 5.205-2.162q-.506.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286" />
+                        <path
+                            d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z" />
+                    </svg>
+                    <span id="theme-mode">Dark Mode</span>
+                </button>
+            </footer>
+        </article>
+    </main>
+
+    <script src="blocked.js"></script>
+</body>
+
+</html>

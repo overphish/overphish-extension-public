@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OverPhish Privacy Policy</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            color: #333;
+        }
+
+        h1 {
+            color: #6366f1;
+            text-align: center;
+        }
+
+        h2 {
+            color: #4f46e5;
+            margin-top: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: .5rem;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: .2rem .4rem;
+            border-radius: 4px;
+            font-size: .9em;
+        }
+
+        .highlight {
+            background: #e0e7ff;
+            padding: 1.5rem;
+            border-left: 5px solid #6366f1;
+            margin: 2rem 0;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th,
+        td {
+            padding: .8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+        }
+
+        a {
+            color: #6366f1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OverPhish Privacy Policy</h1>
+    <p style="text-align:center;color:#666;">Last updated: November 24, 2025</p>
+
+    <div class="highlight">
+        <strong>We collect nothing.</strong><br>
+        OverPhish runs 100% locally. No data ever leaves your device.
+    </div>
+
+    <h2>Data Collection</h2>
+    <p><strong>Zero.</strong> No personal data is collected, stored, or sent anywhere.</p>
+    <ul>
+        <li>No analytics</li>
+        <li>No tracking</li>
+        <li>No cookies</li>
+        <li>No crash reports</li>
+        <li>No telemetry</li>
+    </ul>
+
+    <h2>What We Do</h2>
+    <ul>
+        <li>Download public blocklist: <code>https://overphish.io/blocklist.txt</code></li>
+        <li>Store it locally in IndexedDB</li>
+        <li>Check URLs with webNavigation API</li>
+        <li>Block phishing sites instantly</li>
+    </ul>
+
+    <h2>Permissions</h2>
+    <table>
+        <tr>
+            <th>Permission</th>
+            <th>Purpose</th>
+        </tr>
+        <tr>
+            <td><code>webNavigation</code></td>
+            <td>Block phishing before page load</td>
+        </tr>
+        <tr>
+            <td><code>storage</code></td>
+            <td>Save blocklist & whitelist locally</td>
+        </tr>
+        <tr>
+            <td><code>activeTab</code></td>
+            <td>“Allow Once” / “Whitelist” buttons</td>
+        </tr>
+    </table>
+
+    <h2>Local Data (deleted on uninstall)</h2>
+    <ul>
+        <li>Blocklist</li>
+        <li>Block stats</li>
+        <li>Whitelist</li>
+        <li>Last update time</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:hello@overphish.app">hello@overphish.app</a></p>
+
+    <p style="text-align:center;margin-top:3rem;color:#777;">
+        OverPhish — Privacy by design. Protection by default.
+    </p>
+</body>
+
+</html>

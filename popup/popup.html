@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OverPhish</title>
+    <link rel="stylesheet" href="/ui/css/pico.colors.min.css">
+    <link rel="stylesheet" href="/ui/css/pico.min.css">
+    <style>
+        :root,
+        [data-theme="dark"],
+        [data-theme="light"] {
+            --pico-icon-loading: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24' fill='none'%3E%3Cstyle%3Eg{animation:rotate 2s linear infinite;transform-origin:center center}circle{stroke-dasharray:75,100;stroke-dashoffset:-5;animation:dash 1.5s ease-in-out infinite;stroke-linecap:round}@keyframes rotate{100%{transform:rotate(360deg)}}@keyframes dash{0%{stroke-dasharray:1,100;stroke-dashoffset:0}50%{stroke-dasharray:44.5,100;stroke-dashoffset:-17.5}100%{stroke-dasharray:44.5,100;stroke-dashoffset:-62}}%3C/style%3E%3Cg%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%230172ad' stroke-width='4' opacity='0.3'/%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%230172ad' stroke-width='4' stroke-dasharray='75,100' stroke-dashoffset='-5'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        article {
+            background: none;
+        }
+
+        [aria-busy=true]:not(input, select, textarea, html, form)::before {
+            width: 4rem;
+            height: 4rem;
+            background-size: 4rem auto;
+        }
+
+        body {
+            padding: 1rem;
+            width: 405px;
+            position: relative;
+            font-family: var(--pico-font-family);
+        }
+
+        .container {
+            position: relative;
+        }
+
+        h1.title {
+            position: relative;
+            margin: 0 0 1rem;
+        }
+
+        .descriptor {
+            position: absolute;
+            bottom: -1.35rem;
+            left: 15%;
+            font-size: .5rem;
+            font-weight: 400;
+            opacity: .6;
+            color: var(--pico-color-grey-100);
+        }
+
+        .version {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 10px;
+            color: var(--pico-color-grey-500);
+            font-family: monospace;
+            opacity: .7;
+        }
+
+        /* ---------- MODAL ---------- */
+        #loading-modal {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--pico-color-light);
+            z-index: 100;
+            transition: opacity .3s ease;
+            opacity: 1;
+        }
+
+        #loading-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loading-modal svg {
+            width: 3.5rem;
+            margin-bottom: .75rem;
+            fill: var(--pico-color-blue-500);
+            animation: spin 1.75s linear infinite;
+        }
+
+        #loading-modal p {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .spinner {
+            position: relative;
+            margin: 0;
+            width: 60px;
+            height: 60px;
+            background-image: var(--pico-icon-loading);
+            background-position: center;
+        }
+
+        #progress-container {
+            width: 80%;
+            max-width: 280px;
+            background: var(--pico-color-grey-800);
+            border-radius: 6px;
+            margin: 1rem 0;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        progress {
+            color: var(--pico-color-blue-500);
+            height: 10px;
+        }
+
+        #progress-text {
+            font-size: .85rem;
+            opacity: .9;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---------- BUTTONS ---------- */
+
+        .theme-toggle svg {
+            width: 1em;
+            height: 1em;
+        }
+
+        .stat {
+            margin: .4rem 0;
+            font-size: .95rem;
+            font-family: monospace;
+        }
+
+        /* Theme icons */
+        .bi.bi-sun {
+            display: none;
+        }
+
+        .bi.bi-moon-stars {
+            display: inline-block;
+            margin-top: -3px;
+        }
+
+        [data-theme="light"] .bi.bi-sun {
+            display: inline-block;
+        }
+
+        [data-theme="light"] .bi.bi-moon-stars {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- LOADING MODAL -->
+        <div id="loading-modal">
+            <div class="spinner"></div>
+            <p id="modal-title">Initializing protection…</p>
+            <small id="modal-subtitle">Downloading blocklist</small>
+
+            <div id="progress-container">
+                <progress id="progress-bar" max="100" value="0"></progress>
+            </div>
+            <small id="progress-text">Initializing…</small>
+        </div>
+
+        <!-- MAIN UI -->
+        <div class="container">
+            <h1 class="title">
+                <img src="/assets/icons/icon128.png" width="50" height="50" alt="OverPhish"
+                    style="margin-top: -6px;vertical-align: middle;">OverPhish
+            </h1>
+            <p class="descriptor">PHISHING DOMAIN BLOCKER</p>
+        </div>
+        <div class="version">v1.0.0</div>
+        <section id="tables" style="margin: 2rem 0 0;">
+            <div class="overflow-auto">
+                <table class="striped" style="margin-bottom: 0;">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Blocked Today:</th>
+                            <td><strong id="today">0</strong></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Domains loaded:</th>
+                            <td><strong id="total">0</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <small style="color: var(--pico-color-zinc-600)"><i>Last update: <span id="updated">never</span></i></small>
+    </div>
+
+    <footer style="margin-top: 2rem;">
+        <div class="grid">
+            <button id="openSettings">Settings</button>
+
+            <button class="theme-toggle outline" id="theme-toggle" title="Toggle light/dark mode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-moon-stars" viewBox="0 0 16 16">
+                    <path
+                        d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278M4.858 1.311A7.27 7.27 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.32 7.32 0 0 0 5.205-2.162q-.506.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286" />
+                    <path
+                        d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z" />
+                </svg>
+                <span id="theme-mode">Dark Mode</span>
+            </button>
+        </div>
+    </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

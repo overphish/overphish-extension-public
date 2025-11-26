@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - OverPhish</title>
+    <link rel="stylesheet" href="/ui/css/pico.min.css" />
+    <link rel="stylesheet" href="/ui/css/pico.colors.min.css" />
+    <style>
+        * {
+            transition: opacity .2s;
+        }
+
+        body {
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        section+section {
+            margin-top: 4rem;
+        }
+
+        .gear {
+            animation: spin 20s linear infinite;
+        }
+
+        main .stats-grid .grid>div {
+            padding: calc(var(--pico-spacing) / 2) 0;
+            border-radius: var(--pico-border-radius);
+            background-color: var(--pico-code-background-color);
+            color: var(--pico-muted-color);
+            font-size: .875rem;
+            text-align: center
+        }
+
+        .stat {
+            font-family: monospace;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #whitelist-list {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        .no-domains {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .whitelist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 12px;
+        }
+
+        .whitelist-item pre {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            margin: 0;
+            padding: .75rem .5rem;
+        }
+
+        .whitelist-item svg.remove {
+            width: 36px;
+            height: 36px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            flex-shrink: 0;
+            transition: all 0.18s ease;
+            fill: var(--text-muted);
+        }
+
+        .whitelist-item svg.remove:hover {
+            background: rgba(239, 68, 68, 0.15);
+            fill: #ef4444;
+            transform: scale(1.1);
+        }
+
+        .whitelist-item svg.remove:active {
+            transform: scale(0.95);
+        }
+
+        .remove-btn.reset {
+            all: unset;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            transition: all 0.18s ease;
+        }
+
+        .remove-btn.reset:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+            transform: scale(1.1);
+        }
+
+        .remove-btn.reset:active {
+            transform: scale(0.95);
+        }
+
+        .remove-btn.reset svg.trash-can {
+            width: 22px;
+            height: 22px;
+            fill: #ef4444;
+            transition: fill 0.18s ease;
+        }
+
+        .remove-btn.reset:hover svg.trash-can {
+            fill: #dc2626;
+        }
+
+        .trash-can {
+            width: 1rem;
+        }
+
+        .remove {
+            color: #d32f2f;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            flex: 1;
+        }
+
+        /* Theme icons */
+        .bi.bi-sun {
+            display: none;
+        }
+
+        .bi.bi-moon-stars {
+            display: inline-block;
+            margin-top: -3px;
+        }
+
+        [data-theme="light"] .bi.bi-sun {
+            display: inline-block;
+        }
+
+        [data-theme="light"] .bi.bi-moon-stars {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header style="text-align:center;">
+        <svg class="gear" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" style="width:3rem;color:#1a73e8;">
+            <path
+                d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
+        </svg>
+        <h1>OverPhish Settings</h1>
+    </header>
+
+    <!-- STATS -->
+    <main>
+        <section>
+            <h3>Statistics</h3>
+            <table class="striped"
+                style="width: 100%; margin: 0; border-collapse: collapse; font-family: Arial, sans-serif;">
+                <tbody>
+                    <tr>
+                        <td>Blocked today</td>
+                        <td><strong id="today">0</strong></td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td>Total blocked</td>
+                        <td><strong id="total">0</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Domains loaded</td>
+                        <td><strong id="domains">0</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="color: var(--pico-color-zinc-600);"><small>Last update: <span id="updated">never</span></small>
+            </p>
+        </section>
+
+        <!-- WHITELIST -->
+        <section>
+            <h3>Custom Whitelist</h3>
+            <input type="text" id="whitelist-search" placeholder="Search whitelist..." style="margin-bottom:1rem;">
+
+            <details>
+                <summary style="color:var(--pico-color-zinc-600)"><i>Add a domain.</i></summary>
+                <input type="text" id="new-domain" placeholder="example.com" />
+                <div class="grid">
+                    <button id="add-domain">Add</button>
+                </div>
+            </details>
+            <p id="add-error" style="color:#d32f2f;margin-top:0.5rem;"></p>
+            <div id="whitelist-list">Empty</div>
+        </section>
+
+        <hr style="margin: 4rem 0;">
+
+        <section>
+            <h3>Tools & Diagnostics</h3>
+
+            <h4 style="margin-top:2rem;">Actions</h4>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+                <button id="refresh-blocklist">Refresh Blocklist Now</button>
+                <button id="clear-stats" class="outline secondary">Clear Statistics</button>
+            </div>
+
+            <h4 style="margin-top:2rem;">Import / Export Whitelist</h4>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+                <button id="import-whitelist" class="secondary">Import Whitelist</button>
+                <button id="export-whitelist" class="secondary">Export Whitelist</button>
+                <input type="file" id="import-file" style="display:none;">
+            </div>
+
+            <h4 style="margin-top:2rem;">Error Log</h4>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+                <button id="view-errors" class="secondary">Refresh Log</button>
+                <button id="clear-errors" class="secondary outline">Clear Log</button>
+            </div>
+            <pre id="error-log"
+                style="margin-top:1rem;padding:.5rem;max-height:300px; overflow:auto; background:var(--pico-code-background-color);">No errors.</pre>
+        </section>
+
+    </main>
+
+    <!-- ADD THIS IN <footer> or after Actions -->
+    <footer style="margin-top:2rem;display:flex;justify-content:space-between;align-items:center;">
+        <small style="color: var(--pico-color-zinc-600)">OverPhish v1.0.0</small>
+        <button class="theme-toggle outline" id="theme-toggle" title="Toggle light/dark mode">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun"
+                viewBox="0 0 16 16">
+                <path
+                    d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars"
+                viewBox="0 0 16 16">
+                <path
+                    d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278M4.858 1.311A7.27 7.27 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.32 7.32 0 0 0 5.205-2.162q-.506.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286" />
+                <path
+                    d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z" />
+            </svg>
+            <span id="theme-mode">Dark Mode</span>
+        </button>
+    </footer>
+
+    <!-- EXTERNAL SCRIPT -->
+    <script src="settings.js"></script>
+</body>
+
+</html>

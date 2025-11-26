@@ -1,0 +1,87 @@
+{
+    "manifest_version": 3,
+    "name": "OverPhish: Phishing Domain Blocker",
+    "version": "1.0.0",
+    "description": "Blocks phishing & malware domains in real time using daily-updated public blocklists. 100% private, no tracking.",
+    "icons": {
+        "16": "assets/icons/icon16.png",
+        "32": "assets/icons/icon32.png",
+        "48": "assets/icons/icon48.png",
+        "128": "assets/icons/icon128.png",
+        "512": "assets/icons/icon512.png"
+    },
+    "default_locale": "en",
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab",
+        "webNavigation",
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "overphish_block",
+                "enabled": true,
+                "path": "rules/block.json"
+            }
+        ]
+    },
+    "background": {
+        "service_worker": "background/background.js"
+    },
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "assets/icons/icon16.png",
+            "32": "assets/icons/icon32.png",
+            "48": "assets/icons/icon48.png",
+            "128": "assets/icons/icon128.png"
+        }
+    },
+    "options_page": "settings/settings.html",
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content/content.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": false
+        }
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "blocked/blocked.html",
+                "blocked/blocked.js",
+                "ui/css/pico.min.css",
+                "ui/css/pico.colors.min.css",
+                "popup/popup.html",
+                "popup/popup.js",
+                "settings/settings.html",
+                "settings/settings.js",
+                "privacy/privacy.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "minimum_chrome_version": "107",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "hello@overphish.app",
+            "strict_min_version": "120.0"
+        }
+    }
+}

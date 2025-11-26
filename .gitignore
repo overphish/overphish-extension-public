@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+Icon?
+
+# Thumbnails & temporary files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE / Editor junk
+.idea/
+.vscode/
+*.swp
+*~
+
+# Node / build artifacts (in case you ever add them later)
+node_modules/
+dist/
+build/
+*.log
+
+# Extension-specific (you probably don’t have these, but safe to include)
+*.crx
+*.zip
+*.pem
+*.key

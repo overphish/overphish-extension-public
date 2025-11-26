@@ -1,0 +1,14 @@
+{
+    "extension_name": {
+        "message": "OverPhish - Secure Every Link"
+    },
+    "extension_description": {
+        "message": "Real-time phishing protection."
+    },
+    "blocked_title": {
+        "message": "OverPhish Blocked This Site"
+    },
+    "privacy_policy": {
+        "message": "Privacy Policy"
+    }
+}
