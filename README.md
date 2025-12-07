@@ -15,7 +15,7 @@
 
 This repository contains the **exact, unmodified source code** of the OverPhish extension currently published on:
 
-- Chrome Web Store
+- [Chrome Web Store](https://chromewebstore.google.com/detail/overphish-phishing-domain/mapbfceckmkfnmecoadhfehmdpoomjoa)
 - Microsoft Edge Add-ons
 - Firefox Add-ons (AMO)
 
