@@ -7,7 +7,7 @@
 
 **Source code published for transparency and independent auditing**
 
-<img src="extension/assets/icons/icon128.png" width="128" align="right" alt="OverPhish icon">
+<img src="https://overphish.app/logo.png" width="128" align="right" alt="OverPhish icon">
 
 ![1M+ domains blocked](https://img.shields.io/badge/Blocks-1M%2B%20phishing%20%2B%20malware%20domains-critical?style=flat-square)
 ![Zero telemetry](https://img.shields.io/badge/Privacy-100%25%20local,%20zero%20telemetry-success?style=flat-square)
