@@ -45,12 +45,12 @@ This repository contains the **exact, unmodified source code** of the OverPhish 
 
 ### Official downloads only
 
-| Browser             | Official Store Link                                                                                                                  | Verified |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| Chrome              | (Launching soon) [chromewebstore.google.com/detail/overphish](https://chromewebstore.google.com/detail/overphish/)                   | Yes      |
-| Edge                | (Launching soon) [microsoftedge.microsoft.com/addons/detail/overphish](https://microsoftedge.microsoft.com/addons/detail/overphish/) | Yes      |
-| Firefox             | (Launching soon) [addons.mozilla.org/firefox/addon/overphish](https://addons.mozilla.org/firefox/addon/overphish/)                   | Yes      |
-| Brave/Opera/Vivaldi | Use the Chrome Web Store link above                                                                                                  | Yes      |
+| Browser             | Official Store Link                                                     | Verified |
+| ------------------- | ----------------------------------------------------------------------- | -------- |
+| Chrome              | [Chrome Web Store](https://chromewebstore.google.com/detail/overphish/) | Yes      |
+| Edge                | (Launching soon)                                                        | Pending  |
+| Firefox             | (Launching soon)                                                        | Pending  |
+| Brave/Opera/Vivaldi | Use the Chrome Web Store link above                                     | Pending  |
 
 **Never install OverPhish from anywhere else.**
 
