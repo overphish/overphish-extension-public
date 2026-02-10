@@ -76,7 +76,7 @@ Everything else runs entirely in your browser.
 
 ### Contact & security reports
 
-hello@overphish.app  
+[Contact Us](https://overphish.app/#contact-heading)
 All responsible disclosures are welcomed and rewarded with credit (or bounty if significant).
 
 ### Copyright & License
