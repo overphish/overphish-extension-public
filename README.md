@@ -32,7 +32,7 @@ This repository contains the **exact, unmodified source code** of the OverPhish 
 - Fork this repository
 - Build and load it as an **unpacked/temporary extension** for personal, non-commercial use
 - Open issues or submit pull requests (especially security fixes)
-- Report vulnerabilities → hello@overphish.app (PGP welcomed)
+- Report vulnerabilities → [OverPhish.com](https://overphish.app/#contact-heading)
 
 ### What you are explicitly NOT allowed to do
 
