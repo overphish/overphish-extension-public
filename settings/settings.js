@@ -4,12 +4,50 @@
  * © 2025 OverPhish.app – All rights reserved.
  */
 
-const DEFAULT_WHITELIST = new Set([
+const PERMANENT_WHITELIST = new Set([
+    // Google ecosystem
     'google.com', 'www.google.com',
     'youtube.com', 'www.youtube.com',
+    'youtu.be',
+    'googleapis.com',         // many sites break without it
+    'gstatic.com',
+
+    // Meta / Facebook / Instagram / WhatsApp
     'facebook.com', 'www.facebook.com',
-    'twitter.com', 'www.twitter.com', 'x.com',
-    'github.com', 'localhost', '127.0.0.1'
+    'fb.com', 'www.fb.com',
+    'instagram.com', 'www.instagram.com',
+    'whatsapp.com', 'www.whatsapp.com',
+
+    // X / Twitter
+    'twitter.com', 'www.twitter.com',
+    'x.com', 'www.x.com',
+
+    // Microsoft
+    'microsoft.com', 'www.microsoft.com',
+    'live.com', 'outlook.live.com', 'outlook.com',
+
+    // Apple
+    'apple.com', 'www.apple.com',
+    'icloud.com',
+
+    // Amazon
+    'amazon.com', 'www.amazon.com',
+
+    // GitHub + common dev sites
+    'github.com', 'www.github.com',
+    'githubusercontent.com',
+
+    // Local / loopback
+    'localhost',
+    '127.0.0.1',
+    '::1',                    // IPv6 localhost
+
+    // Common CDNs / auth providers that break sites when blocked
+    'cloudflare.com',
+    'cloudflare.net',
+    'akamai.net',
+    'akamaized.net',
+    'fastly.net',
 ]);
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -24,8 +62,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { whitelist = [] } = await chrome.storage.local.get('whitelist');
 
         // Combine user domains + defaults, but mark defaults
-        const userDomains = whitelist.filter(d => !DEFAULT_WHITELIST.has(d));
-        const allDomains = [...new Set([...userDomains, ...DEFAULT_WHITELIST])].sort();
+        const userDomains = whitelist.filter(d => !PERMANENT_WHITELIST.has(d));
+        const allDomains = [...new Set([...userDomains, ...PERMANENT_WHITELIST])].sort();
 
         whitelistList.innerHTML = '';
 
@@ -35,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         allDomains.forEach(domain => {
-            const isDefault = DEFAULT_WHITELIST.has(domain);
+            const isDefault = PERMANENT_WHITELIST.has(domain);
             const isUserAdded = userDomains.includes(domain);
 
             const item = document.createElement('div');
@@ -66,13 +104,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!domain) return addError.textContent = 'Enter a domain';
         if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)) return addError.textContent = 'Invalid domain';
-        if (DEFAULT_WHITELIST.has(domain)) return addError.textContent = `${domain} is already permanently allowed`;
+        if (PERMANENT_WHITELIST.has(domain)) return addError.textContent = `${domain} is already permanently allowed`;
 
         const { whitelist = [] } = await chrome.storage.local.get('whitelist');
-        if (whitelist.includes(domain)) return addError.textContent = 'Already in whitelist';
+        if (whitelist.includes(domain)) {
+            addError.textContent = 'Already in whitelist';
+            addInput.select();
+            return;
+        }
 
         await chrome.storage.local.set({ whitelist: [...whitelist, domain] });
         addInput.value = '';
+        document.getElementById('whitelist-search').value = '';
+
+        const toast = document.createElement('div');
+        toast.textContent = `Added ${domain}`;
+        toast.style = 'position:fixed;bottom:20px;right:20px;background:#10b981;color:white;padding:12px 20px;border-radius:8px;z-index:1000;';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+
         await renderWhitelist();
     });
 
@@ -115,6 +165,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             refreshBtn.disabled = false;
             refreshBtn.textContent = 'Refresh Blocklist Now';
         }, 1200);
+        const toast = document.createElement('div');
+        toast.textContent = 'Blocklist refreshed!';
+        toast.style = 'position:fixed;bottom:20px;right:20px;background:#10b981;color:white;padding:12px 20px;border-radius:8px;z-index:1000;';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     });
 
     // === CLEAR STATS ===
@@ -176,6 +231,98 @@ function applySavedTheme() {
 
 applySavedTheme();
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', applySavedTheme);
+
+// === IMPORT / EXPORT WHITELIST ===
+
+// Export: download current user whitelist as JSON file
+document.getElementById('export-whitelist')?.addEventListener('click', async () => {
+    try {
+        const { whitelist = [] } = await chrome.storage.local.get('whitelist');
+        const userWhitelist = whitelist.filter(d => !PERMANENT_WHITELIST.has(d)); // exclude built-ins
+
+        if (userWhitelist.length === 0) {
+            alert('No custom domains to export.');
+            return;
+        }
+
+        const blob = new Blob([JSON.stringify(userWhitelist, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().split('T')[0];
+
+        a.download = `overphish-whitelist-${date}.json`;
+        a.href = url;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('Export failed:', err);
+        alert('Failed to export whitelist. Check console for details.');
+    }
+});
+
+// Import: trigger hidden file input
+document.getElementById('import-whitelist')?.addEventListener('click', () => {
+    document.getElementById('import-file')?.click();
+});
+
+// Handle file selection and import
+document.getElementById('import-file')?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+        const text = await file.text();
+        let imported;
+
+        try {
+            imported = JSON.parse(text);
+        } catch (parseErr) {
+            alert('Invalid JSON file.');
+            return;
+        }
+
+        if (!Array.isArray(imported)) {
+            alert('File must contain an array of domains.');
+            return;
+        }
+
+        // Clean and validate domains
+        const cleaned = imported
+            .map(d => d.trim().toLowerCase())
+            .filter(d => d && /^[a-z0-9.-]+\.[a-z]{2,}$/.test(d))
+            .filter(d => !PERMANENT_WHITELIST.has(d)); // ignore built-ins
+
+        if (cleaned.length === 0) {
+            alert('No valid custom domains found in file.');
+            return;
+        }
+
+        // Merge with existing user whitelist
+        const { whitelist = [] } = await chrome.storage.local.get('whitelist');
+        const existingUser = whitelist.filter(d => !PERMANENT_WHITELIST.has(d));
+        const duplicates = cleaned.filter(d => existingUser.includes(d));
+        if (duplicates.length > 0) {
+            console.warn('Skipped duplicates during import:', duplicates);
+        }
+        const merged = [...new Set([...existingUser, ...cleaned])];
+
+        await chrome.storage.local.set({ whitelist: merged });
+        alert(`Imported ${cleaned.length} new domain(s). Total custom: ${merged.length}`);
+
+        // Refresh UI
+        await renderWhitelist();
+    } catch (err) {
+        console.error('Import failed:', err);
+        alert('Failed to import whitelist. Check console for details.');
+    }
+
+    // Reset file input
+    e.target.value = '';
+});
 
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === 'themeChanged') {

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "OverPhish: Phishing Domain Blocker",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Blocks phishing & malware domains in real time using daily-updated public blocklists. 100% private, no tracking.",
     "icons": {
         "16": "assets/icons/icon16.png",
@@ -14,9 +14,12 @@
     "permissions": [
         "storage",
         "activeTab",
+        "offscreen",
         "webNavigation",
         "declarativeNetRequest",
-        "declarativeNetRequestFeedback"
+        "declarativeNetRequestWithHostAccess",
+        "unlimitedStorage",
+        "alarms"
     ],
     "host_permissions": [
         "<all_urls>"
@@ -52,7 +55,7 @@
                 "content/content.js"
             ],
             "run_at": "document_start",
-            "all_frames": false
+            "all_frames": true
         }
     ],
     "content_security_policy": {
@@ -76,10 +79,10 @@
             ]
         }
     ],
-    "minimum_chrome_version": "107",
+    "minimum_chrome_version": "114",
     "browser_specific_settings": {
         "gecko": {
-            "id": "hello@overphish.app",
+            "id": "support@overphish.app",
             "strict_min_version": "120.0"
         }
     }

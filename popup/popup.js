@@ -13,6 +13,7 @@ const title = document.getElementById('modal-title');
 const subtitle = document.getElementById('modal-subtitle');
 const progressBar = document.getElementById('progress-bar');
 const progressTxt = document.getElementById('progress-text');
+document.querySelector('.version').textContent = `v${chrome.runtime.getManifest().version}`;
 
 /* --------------------------------------------------------------
    1. THEME: Apply on load + listen to changes
@@ -35,12 +36,29 @@ function connect() {
         port = chrome.runtime.connect({ name: 'overphish-progress' });
 
         port.onMessage.addListener(msg => {
-            if (msg.action === 'phase') setPhase(msg.phase);
-            else if (msg.action === 'progress') updateProgress(msg.type, msg.current, msg.total);
-            else if (msg.action === 'blocklistUpdated') updateStats(msg.size);
-            else if (msg.action === 'blockCount') {
-                stats.today = msg.today;
-                document.getElementById('today').textContent = msg.today;
+            if (!msg || typeof msg !== 'object') return;
+
+            if (msg.action === 'phase') {
+                setPhase(msg.phase);
+            } else if (msg.action === 'progress') {
+                // Only process if we have the expected fields
+                if ('type' in msg && 'current' in msg && 'total' in msg) {
+                    updateProgress(msg.type, msg.current, msg.total);
+                } else {
+                    console.warn('[Popup] Invalid progress message:', msg);
+                }
+            } else if (msg.action === 'blocklistUpdated') {
+                if (typeof msg.size === 'number' && !isNaN(msg.size)) {
+                    updateStats(msg.size);
+                } else {
+                    console.warn('[Popup] Invalid blocklistUpdated size:', msg);
+                }
+            } else if (msg.action === 'blockCount') {
+                const today = Number(msg.today);
+                if (!isNaN(today)) {
+                    stats.today = today;
+                    document.getElementById('today').textContent = today;
+                }
             }
         });
 
@@ -91,29 +109,28 @@ function setPhase(phase) {
 }
 
 function updateProgress(type, current, total) {
-    const percent = total ? Math.round((current / total) * 100) : null;
+    current = Number(current) || 0;
+    total = Number(total) || 0;
 
-    progressBar.value = percent ?? 0;
+    const percent = total > 0 ? Math.round((current / total) * 100) : 0;
+
+    progressBar.value = percent;
     progressBar.max = 100;
 
-    let text = '';
+    let text = 'Processing…';
+
     if (type === 'download') {
-        text = percent !== null
-            ? `${percent}% (${formatBytes(current)} / ${formatBytes(total)})`
+        text = percent > 0
+            ? `${percent}% (${formatBytes(current)} / ${formatBytes(total || current)})`
             : `Downloading… ${formatBytes(current)}`;
-    } else {
+    } else if (type === 'indexing') {
         text = `Indexing ${current.toLocaleString()} / ${total.toLocaleString()} domains`;
+    } else if (type) {
+        // fallback for unknown but present type
+        text = `${type.charAt(0).toUpperCase() + type.slice(1)} ${current.toLocaleString()}`;
     }
 
     progressTxt.textContent = text;
-}
-
-function formatBytes(bytes) {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
 }
 
 /* --------------------------------------------------------------
@@ -160,15 +177,15 @@ function updateThemeIcon() {
         if (resp?.stats) {
             stats = resp.stats;
 
-            const size = stats.blocklistSize || 0;
-            const todayCount = stats.today || 0;
+            const size = Number(stats.blocklistSize) || 0;
+            const todayCount = Number(stats.today) || 0;
 
             const todayEl = document.getElementById('today');
             const totalEl = document.getElementById('total');
             const updatedEl = document.getElementById('updated');
 
-            if (todayEl) todayEl.textContent = todayCount;
             if (totalEl) totalEl.textContent = size.toLocaleString();
+            if (todayEl) todayEl.textContent = todayCount;
             if (updatedEl) updatedEl.textContent = stats.lastUpdate
                 ? new Date(stats.lastUpdate).toLocaleString()
                 : 'never';
