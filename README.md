@@ -81,7 +81,7 @@ All responsible disclosures are welcomed and rewarded with credit (or bounty if 
 
 ### Copyright & License
 
-**Copyright © 2025 OverPhish.app – All rights reserved.**
+**Copyright © 2025—2026 OverPhish.app – All rights reserved.**
 
 This source code is released **solely for transparency and auditing**.  
 It is **not** an open-source license.
