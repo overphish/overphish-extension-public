@@ -48,8 +48,8 @@ This repository contains the **exact, unmodified source code** of the OverPhish 
 | Browser             | Official Store Link                                                                                                         | Verified |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------- |
 | Chrome              | [Chrome Web Store](https://chromewebstore.google.com/detail/overphish/)                                                     | Yes      |
-| Edge                | [Edge Add-Ons](https://microsoftedge.microsoft.com/addons/detail/overphish-phishing-domai/fmnmgpjbkbhgeaognhhlkdnjlhdlmlll) | Pending  |
-| Firefox             | [FireFox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/overphish/)                                                | Pending  |
+| Edge                | [Edge Add-Ons](https://microsoftedge.microsoft.com/addons/detail/overphish-phishing-domai/fmnmgpjbkbhgeaognhhlkdnjlhdlmlll) | Yes      |
+| Firefox             | [FireFox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/overphish/)                                                | Yes      |
 | Brave/Opera/Vivaldi | Use the Chrome Web Store link above                                                                                         | Pending  |
 
 **Never install OverPhish from anywhere else.**
